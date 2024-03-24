@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { FormEvent, useRef, useState } from "react";
 import "./App.css";
 import RecipeCard from "./components/RecipeCard";
 import { AiOutlineSearch } from "react-icons/ai";
@@ -6,15 +6,30 @@ import * as api from "./api";
 import { Recipe } from "./types";
 
 const App = () => {
-  const [searchTerm, setSearchTerm] = useState("burgers");
+  const [searchTerm, setSearchTerm] = useState<string>("");
   const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const pageNumber = useRef(1);
 
-  const handleSearchSubmit = async () => {
+  const handleSearchSubmit = async (event: FormEvent) => {
+    event.preventDefault();
+
     try {
       const recipes = await api.searchRecipes(searchTerm, 1);
-      setRecipes(recipes);
+      console.log({ recipes });
+      setRecipes(recipes.results);
     } catch (e) {
       console.log(e);
+    }
+  };
+
+  const handleViewMoreClick = async () => {
+    const nextPage = pageNumber.current + 1;
+    try {
+      const nextRecepies = await api.searchRecipes(searchTerm, nextPage);
+      setRecipes([...recipes, ...nextRecepies.results]);
+      pageNumber.current = nextPage;
+    } catch (error) {
+      console.log(error);
     }
   };
   return (
@@ -39,18 +54,32 @@ const App = () => {
             <AiOutlineSearch size={40} />
           </button>
         </form>
-        <button>Submit</button>
-        {recipes.map((recipe) => (
-          <div>
-            recipe image location: {recipe.image}
-            recipe title: {recipe.title}
-          </div>
-        ))}
-        <div className="recipe-grid">
-          <RecipeCard />
+
+        {/* ------------------------- */}
+
+        <div>
+          <form onSubmit={(event) => handleSearchSubmit(event)}>
+            <input
+              type="text"
+              required
+              placeholder="Enter a search term..."
+              value={searchTerm}
+              onChange={(event) => setSearchTerm(event.target.value)}
+            ></input>
+            <button type="submit">Submit</button>
+          </form>
         </div>
 
-        <button className="view-more-button">View More</button>
+        {/* --------------------------- */}
+        <div className="recipe-grid">
+          {recipes.map((recipe) => (
+            <RecipeCard image={recipe.image} title={recipe.title} />
+          ))}
+        </div>
+
+        <button className="view-more-button" onClick={handleViewMoreClick}>
+          View More
+        </button>
       </>
     </div>
   );
