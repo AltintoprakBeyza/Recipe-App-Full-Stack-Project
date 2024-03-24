@@ -1,14 +1,14 @@
 import { AiOutlineHeart } from "react-icons/ai";
 
-const RecipeCard = () => {
+const RecipeCard = ({ title, image }: { title: string; image: string }) => {
   return (
     <div className="recipe-card">
-      <img src="https://placehold.co/600x400"></img>
+      <img src={image}></img>
       <div className="recipe-card-title">
         <span>
           <AiOutlineHeart size={25} />
         </span>
-        <h3>RECIPE TITLE</h3>
+        <h3>{title}</h3>
       </div>
     </div>
   );
