@@ -4,10 +4,14 @@ import RecipeCard from "./components/RecipeCard";
 import { AiOutlineSearch } from "react-icons/ai";
 import * as api from "./api";
 import { Recipe } from "./types";
+import RecipeModal from "./components/RecipeModal";
 
 const App = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const [selectedRecipe, setSelectedRecipe] = useState<Recipe | undefined>(
+    undefined
+  );
   const pageNumber = useRef(1);
 
   const handleSearchSubmit = async (event: FormEvent) => {
@@ -73,13 +77,24 @@ const App = () => {
         {/* --------------------------- */}
         <div className="recipe-grid">
           {recipes.map((recipe) => (
-            <RecipeCard image={recipe.image} title={recipe.title} />
+            <RecipeCard
+              image={recipe.image}
+              title={recipe.title}
+              onClick={() => setSelectedRecipe(recipe)}
+            />
           ))}
         </div>
 
         <button className="view-more-button" onClick={handleViewMoreClick}>
           View More
         </button>
+
+        {selectedRecipe ? (
+          <RecipeModal
+            recipeId={selectedRecipe.id.toString()}
+            onClose={() => setSelectedRecipe(undefined)}
+          />
+        ) : null}
       </>
     </div>
   );
