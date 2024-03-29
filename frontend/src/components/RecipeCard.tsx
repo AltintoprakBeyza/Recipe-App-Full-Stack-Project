@@ -1,28 +1,36 @@
-import { AiOutlineHeart } from "react-icons/ai";
 import { Recipe } from "../types";
+import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 
 interface Props {
   recipe: Recipe;
-  onClick: (recipe: Recipe) => void;
+  isFavourite: boolean;
+  onClick: () => void;
+  onFavouriteButtonClick: (recipe: Recipe) => void;
 }
 
 const RecipeCard = ({
-  title,
-  image,
+  recipe,
   onClick,
-}: {
-  title: string;
-  image: string;
-  onClick: () => void;
-}) => {
+  onFavouriteButtonClick,
+  isFavourite,
+}: Props) => {
   return (
     <div className="recipe-card" onClick={onClick}>
-      <img src={image}></img>
+      <img src={recipe.image}></img>
       <div className="recipe-card-title">
-        <span>
-          <AiOutlineHeart size={25} />
+        <span
+          onClick={(event) => {
+            event.stopPropagation();
+            onFavouriteButtonClick(recipe);
+          }}
+        >
+          {isFavourite ? (
+            <AiFillHeart size={25} color="red" />
+          ) : (
+            <AiOutlineHeart size={25} />
+          )}
         </span>
-        <h3>{title}</h3>
+        <h3>{recipe.title}</h3>
       </div>
     </div>
   );
