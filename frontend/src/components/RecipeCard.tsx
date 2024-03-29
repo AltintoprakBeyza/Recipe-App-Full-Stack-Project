@@ -1,8 +1,22 @@
 import { AiOutlineHeart } from "react-icons/ai";
+import { Recipe } from "../types";
 
-const RecipeCard = ({ title, image }: { title: string; image: string }) => {
+interface Props {
+  recipe: Recipe;
+  onClick: (recipe: Recipe) => void;
+}
+
+const RecipeCard = ({
+  title,
+  image,
+  onClick,
+}: {
+  title: string;
+  image: string;
+  onClick: () => void;
+}) => {
   return (
-    <div className="recipe-card">
+    <div className="recipe-card" onClick={onClick}>
       <img src={image}></img>
       <div className="recipe-card-title">
         <span>
