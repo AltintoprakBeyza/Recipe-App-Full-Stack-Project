@@ -75,6 +75,7 @@ button {
   padding: 1em;
   font-weight: bold;
   margin: auto;
+  margin-bottom: 60px;
 }
 
 .app-container {
